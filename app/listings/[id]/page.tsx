@@ -1,4 +1,8 @@
+// app/listings/[id]/page.tsx
+import React from 'react'
 import { ListingDetails } from './listing-details'
+
+type PageParams = Promise<{ id: string }>
 
 const listings = {
   "1": {
@@ -99,8 +103,10 @@ const listings = {
   }
 }
 
-export default function ListingPage({ params }: { params: { id: string } }) {
-  const listing = listings[params.id as keyof typeof listings];
+export default async function ListingPage({ params }: { params: PageParams }) {
+  // Next.js 15 now makes `params` a Promise, so we have to await it:
+  const { id } = await params
+  const listing = listings[id as keyof typeof listings]
 
   if (!listing) {
     return (
@@ -114,4 +120,4 @@ export default function ListingPage({ params }: { params: { id: string } }) {
   }
 
   return <ListingDetails listing={listing} />
-} 
+}
