@@ -2,9 +2,9 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Heart, Star, MapPin } from 'lucide-react'
+// import { Button } from '@/components/ui/button'
+// import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Heart, Star } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface Listing {

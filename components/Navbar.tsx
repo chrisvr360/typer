@@ -12,13 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useScrollDirection } from '@/hooks/useScrollDirection'
 
 export function Navbar() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
-  const { scrollDirection, isAtTop } = useScrollDirection()
+  const { isAtTop } = useScrollDirection()
 
   useEffect(() => {
     setMounted(true)

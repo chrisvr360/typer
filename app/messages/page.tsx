@@ -1,12 +1,10 @@
 "use client"
 import { useState } from 'react'
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+// import { Button } from '@/components/ui/button'
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { MessageSquare, Send, Clock } from 'lucide-react'
+import { Send, Clock } from 'lucide-react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
