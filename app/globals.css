@@ -154,4 +154,16 @@
   .glass-nav-dark {
     @apply glass-dark sticky top-0 z-50 backdrop-blur-xl;
   }
+
+  .text-primary {
+    @apply dark:text-teal-200 text-teal-800;
+  }
+
+  .text-secondary {
+    @apply dark:text-teal-200/70 text-teal-800/70;
+  }
+
+  .hover-text-primary {
+    @apply dark:hover:text-teal-200 hover:text-teal-900;
+  }
 }

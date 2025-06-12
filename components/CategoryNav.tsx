@@ -2,72 +2,73 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { useTheme } from 'next-themes';
-import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useScrollDirection } from '@/hooks/useScrollDirection';
 
 const provinces = [
-  { name: 'Western Cape', href: '/province/western-cape' },
-  { name: 'Eastern Cape', href: '/province/eastern-cape' },
-  { name: 'Northern Cape', href: '/province/northern-cape' },
-  { name: 'Free State', href: '/province/free-state' },
-  { name: 'KwaZulu-Natal', href: '/province/kwazulu-natal' },
-  { name: 'North West', href: '/province/north-west' },
-  { name: 'Gauteng', href: '/province/gauteng' },
-  { name: 'Mpumalanga', href: '/province/mpumalanga' },
-  { name: 'Limpopo', href: '/province/limpopo' },
+  { name: "Eastern Cape", slug: "eastern-cape" },
+  { name: "Western Cape", slug: "western-cape" },
+  { name: "Northern Cape", slug: "northern-cape" },
+  { name: "Free State", slug: "free-state" },
+  { name: "KwaZulu-Natal", slug: "kwa-zulu-natal" },
+  { name: "Gauteng", slug: "gauteng" },
+  { name: "Limpopo", slug: "limpopo" },
+  { name: "Mpumalanga", slug: "mpumalanga" },
+  { name: "North West", slug: "north-west" },
 ];
 
 export function CategoryNav() {
   const pathname = usePathname();
-  const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const { scrollDirection, isAtTop } = useScrollDirection();
+  const isProvincePage = pathname.startsWith('/province/');
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
+  const shouldShow = isAtTop || (isProvincePage && scrollDirection === 'up');
 
   return (
-    <div className={theme === 'dark' ? 'glass-nav-dark' : 'glass-nav'}>
-      <div className="container mx-auto px-4">
-        <div className="relative flex items-center justify-between py-4">
-          <div className="flex items-center space-x-1">
-            {provinces.map((province) => {
-              const isActive = pathname === province.href;
-              return (
-                <Link
-                  key={province.name}
-                  href={province.href}
-                  className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 ${
-                    isActive 
-                      ? 'text-white' 
-                      : theme === 'dark' 
-                        ? 'text-teal-200/70 hover:text-teal-200' 
-                        : 'text-teal-800/70 hover:text-teal-900'
-                  }`}
-                >
-                  {isActive && (
+    <AnimatePresence>
+      {shouldShow && (
+        <motion.nav
+          className="glass-nav sticky top-[72px] z-40"
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -100, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-center space-x-4 py-4 overflow-x-auto">
+              {provinces.map((province) => {
+                const isActive = pathname === `/province/${province.slug}`;
+                return (
+                  <Link
+                    key={province.slug}
+                    href={`/province/${province.slug}`}
+                    className="relative"
+                  >
                     <motion.div
-                      className={theme === 'dark' ? 'glass-dark' : 'glass'}
-                      layoutId="activeProvince"
-                      transition={{
-                        type: "spring",
-                        stiffness: 380,
-                        damping: 30
-                      }}
-                    />
-                  )}
-                  <span className="relative z-10">{province.name}</span>
-                </Link>
-              );
-            })}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                        isActive
+                          ? "glass text-primary"
+                          : "hover:bg-teal-500/10 text-muted-foreground"
+                      }`}
+                    >
+                      {province.name}
+                    </motion.div>
+                    {isActive && (
+                      <motion.div
+                        layoutId="activeProvince"
+                        className="absolute inset-0 glass rounded-full"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </motion.nav>
+      )}
+    </AnimatePresence>
   );
 } 

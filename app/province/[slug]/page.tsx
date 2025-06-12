@@ -4,7 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Heart, Star, MapPin } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import { MapPin, Star, Heart, Search } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface Listing {
@@ -15,74 +16,92 @@ interface Listing {
   rating: number;
   reviews: number;
   image: string;
+  description: string;
 }
 
-// Dummy data for demonstration
-const dummyFavorites: Listing[] = [
-  {
-    id: 1,
-    title: "Luxury Beachfront Villa",
-    location: "Cape Town, Western Cape",
-    price: 2500,
-    rating: 4.9,
-    reviews: 128,
-    image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=60",
-  },
-  {
-    id: 2,
-    title: "Mountain View Cottage",
-    location: "Drakensberg, KwaZulu-Natal",
-    price: 1800,
-    rating: 4.8,
-    reviews: 95,
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=60",
-  },
-  {
-    id: 3,
-    title: "City Center Apartment",
-    location: "Johannesburg, Gauteng",
-    price: 1200,
-    rating: 4.7,
-    reviews: 156,
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&auto=format&fit=crop&q=60",
-  },
-]
+type ProvinceSlug = 'eastern-cape' | 'western-cape' | 'northern-cape' | 'free-state' | 'kwa-zulu-natal' | 'gauteng' | 'limpopo' | 'mpumalanga' | 'north-west';
 
-export default function FavoritesPage() {
-  const [favorites] = useState(dummyFavorites)
+const provinceNames: Record<ProvinceSlug, string> = {
+  'eastern-cape': 'Eastern Cape',
+  'western-cape': 'Western Cape',
+  'northern-cape': 'Northern Cape',
+  'free-state': 'Free State',
+  'kwa-zulu-natal': 'KwaZulu-Natal',
+  'gauteng': 'Gauteng',
+  'limpopo': 'Limpopo',
+  'mpumalanga': 'Mpumalanga',
+  'north-west': 'North West',
+};
+
+const dummyListings: Record<ProvinceSlug, Listing[]> = {
+  'eastern-cape': [
+    {
+      id: 1,
+      title: 'Beachfront Villa',
+      location: 'Port Elizabeth',
+      price: 2500,
+      rating: 4.8,
+      reviews: 124,
+      image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=60',
+      description: 'Luxurious beachfront villa with stunning ocean views',
+    },
+  ],
+  'western-cape': [
+    {
+      id: 2,
+      title: 'Mountain View Cottage',
+      location: 'Cape Town',
+      price: 1800,
+      rating: 4.9,
+      reviews: 156,
+      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=60',
+      description: 'Cozy cottage with panoramic mountain views',
+    },
+  ],
+  'northern-cape': [],
+  'free-state': [],
+  'kwa-zulu-natal': [],
+  'gauteng': [],
+  'limpopo': [],
+  'mpumalanga': [],
+  'north-west': [],
+};
+
+export default function ProvincePage({ params }: { params: { slug: string } }) {
+  const [searchQuery, setSearchQuery] = useState('')
+  const currentSlug = params.slug as ProvinceSlug;
+
+  const provinceListings = dummyListings[currentSlug] || []
+  const filteredListings = provinceListings.filter((listing: Listing) =>
+    listing.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    listing.location.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   return (
     <div className="space-y-8">
       <div className="glass-card flex justify-between items-center">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent">
-          Your Favorites
+          {provinceNames[currentSlug]} Properties
         </h1>
-        <div className="flex items-center space-x-2">
-          <Heart className="h-5 w-5 text-teal-500" />
-          <span className="text-teal-500">{favorites.length} saved</span>
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search properties..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="glass px-4 py-2 rounded-full w-64 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+          />
         </div>
       </div>
 
-      {favorites.length === 0 ? (
+      {filteredListings.length === 0 ? (
         <div className="glass-card text-center py-12">
-          <Heart className="h-16 w-16 mx-auto text-teal-500 mb-4" />
-          <h2 className="text-2xl font-semibold mb-2">No favorites yet</h2>
-          <p className="text-muted-foreground mb-6">
-            Start exploring and save your favorite properties
-          </p>
-          <Link href="/" className="inline-block">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="glass-card px-6 py-2 rounded-full text-teal-500 hover:bg-teal-500/10"
-            >
-              Explore Properties
-            </motion.div>
-          </Link>
+          <h2 className="text-2xl font-semibold mb-2">No properties found</h2>
+          <p className="text-muted-foreground">Try adjusting your search criteria</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {favorites.map((listing: Listing) => (
+          {filteredListings.map((listing: Listing) => (
             <Link href={`/listings/${listing.id}`} key={listing.id}>
               <motion.div
                 className="glass-card group overflow-hidden cursor-pointer"
