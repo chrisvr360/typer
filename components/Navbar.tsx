@@ -2,8 +2,9 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from './ui/button'
-import { Menu, Search, Moon, Sun, User, Home, Calendar, Settings, LogOut, Heart, Star, MessageSquare } from 'lucide-react'
+import { Menu, Search, Moon, Sun, User, Home, Calendar, Settings, LogOut, Heart, Star, MessageSquare, LogIn } from 'lucide-react'
 import { useTheme } from 'next-themes'
+import { useSession, signOut } from 'next-auth/react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,6 +20,7 @@ export function Navbar() {
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const { isAtTop } = useScrollDirection()
+  const { data: session } = useSession()
 
   useEffect(() => {
     setMounted(true)
@@ -65,7 +67,7 @@ export function Navbar() {
           </div>
 
           {/* Right Side Menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             {/* Theme Toggle */}
             <Button
               variant="ghost"
@@ -87,58 +89,80 @@ export function Navbar() {
                   <Menu className="h-5 w-5 text-primary" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className={`${theme === 'dark' ? 'glass-dark' : 'glass'} p-2`}>
-                <DropdownMenuLabel className="text-primary">My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-teal-500/20" />
-                <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
-                  <Link href="/profile" className="flex items-center w-full">
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
-                  <Link href="/listings" className="flex items-center w-full">
-                    <Home className="mr-2 h-4 w-4" />
-                    My Listings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
-                  <Link href="/bookings" className="flex items-center w-full">
-                    <Calendar className="mr-2 h-4 w-4" />
-                    My Bookings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
-                  <Link href="/favorites" className="flex items-center w-full">
-                    <Heart className="mr-2 h-4 w-4" />
-                    Favorites
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
-                  <Link href="/reviews" className="flex items-center w-full">
-                    <Star className="mr-2 h-4 w-4" />
-                    Reviews
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
-                  <Link href="/messages" className="flex items-center w-full">
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Messages
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-teal-500/20" />
-                <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
-                  <Link href="/settings" className="flex items-center w-full">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-red-500 hover:bg-red-500/10 cursor-pointer">
-                  <div className="flex items-center w-full">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
-                  </div>
-                </DropdownMenuItem>
+              <DropdownMenuContent align="end" className="w-56 glass">
+                {session ? (
+                  <>
+                    <DropdownMenuLabel className="text-primary">My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-teal-500/20" />
+                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                      <Link href="/profile" className="flex items-center w-full">
+                        <User className="mr-2 h-4 w-4" />
+                        Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                      <Link href="/listings" className="flex items-center w-full">
+                        <Home className="mr-2 h-4 w-4" />
+                        My Listings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                      <Link href="/bookings" className="flex items-center w-full">
+                        <Calendar className="mr-2 h-4 w-4" />
+                        My Bookings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                      <Link href="/favorites" className="flex items-center w-full">
+                        <Heart className="mr-2 h-4 w-4" />
+                        Favorites
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                      <Link href="/reviews" className="flex items-center w-full">
+                        <Star className="mr-2 h-4 w-4" />
+                        Reviews
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                      <Link href="/messages" className="flex items-center w-full">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Messages
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-teal-500/20" />
+                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                      <Link href="/settings" className="flex items-center w-full">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Settings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="text-red-500 hover:bg-red-500/10 cursor-pointer"
+                      onClick={() => signOut()}
+                    >
+                      <div className="flex items-center w-full">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Logout
+                      </div>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                      <Link href="/auth/signin" className="flex items-center w-full">
+                        <LogIn className="mr-2 h-4 w-4" />
+                        Sign In
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                      <Link href="/auth/signin" className="flex items-center w-full">
+                        <User className="mr-2 h-4 w-4" />
+                        Register
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
