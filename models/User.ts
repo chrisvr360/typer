@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const userSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Please provide a name'],
@@ -63,6 +63,26 @@ const userSchema = new mongoose.Schema({
       default: Date.now,
     },
   }],
+  emailVerified: {
+    type: Date,
+  },
+  firstName: {
+    type: String,
+  },
+  lastName: {
+    type: String,
+  },
+  username: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  bio: {
+    type: String,
+  },
+  phoneNumber: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -74,9 +94,9 @@ const userSchema = new mongoose.Schema({
 })
 
 // Update the updatedAt timestamp before saving
-userSchema.pre('save', function(next) {
+UserSchema.pre('save', function(next) {
   this.updatedAt = new Date()
   next()
 })
 
-export default mongoose.models.User || mongoose.model('User', userSchema) 
+export default mongoose.models.User || mongoose.model('User', UserSchema) 
