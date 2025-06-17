@@ -110,18 +110,18 @@ export function ListingDetails({ listing }: { listing: Listing }) {
           <div className="glass-card p-6">
             <div className="flex justify-between items-start mb-6">
               <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent mb-2">
+                <h1 className="text-3xl font-bold text-foreground mb-2">
                   {listing.title}
                 </h1>
-                <div className="flex items-center text-teal-200/80">
+                <div className="flex items-center text-muted-foreground">
                   <MapPin className="h-4 w-4 mr-1" />
                   <span>{listing.location}</span>
                 </div>
               </div>
-              <div className="flex items-center bg-teal-500/20 px-3 py-1 rounded-full">
-                <Star className="h-5 w-5 fill-teal-400 text-teal-400 mr-1" />
-                <span className="font-semibold text-white">{listing.rating}</span>
-                <span className="text-teal-200/80 ml-1">
+              <div className="flex items-center bg-primary/20 px-3 py-1 rounded-full">
+                <Star className="h-5 w-5 fill-primary text-primary mr-1" />
+                <span className="font-semibold text-foreground">{listing.rating}</span>
+                <span className="text-muted-foreground ml-1">
                   ({listing.reviewCount} reviews)
                 </span>
               </div>
@@ -139,13 +139,13 @@ export function ListingDetails({ listing }: { listing: Listing }) {
                   />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white">Hosted by {listing.host.name}</h3>
-                  <p className="text-sm text-teal-200/80">
+                  <h3 className="font-semibold text-foreground">Hosted by {listing.host.name}</h3>
+                  <p className="text-sm text-muted-foreground">
                     Joined in {listing.host.joined}
                   </p>
                 </div>
               </div>
-              <Button variant="outline" className="glass-card text-teal-500 hover:bg-teal-500/10">
+              <Button variant="outline" className="glass-button text-primary hover:bg-primary/10">
                 Contact Host
               </Button>
             </div>
@@ -153,33 +153,33 @@ export function ListingDetails({ listing }: { listing: Listing }) {
             {/* Details */}
             <div className="grid grid-cols-3 gap-4 mb-6">
               <div className="glass-card p-4 text-center">
-                <Bed className="h-6 w-6 mx-auto mb-2 text-teal-500" />
-                <span className="text-white">{listing.details.bedrooms} bedrooms</span>
+                <Bed className="h-6 w-6 mx-auto mb-2 text-primary" />
+                <span className="text-foreground">{listing.details.bedrooms} bedrooms</span>
               </div>
               <div className="glass-card p-4 text-center">
-                <Bath className="h-6 w-6 mx-auto mb-2 text-teal-500" />
-                <span className="text-white">{listing.details.bathrooms} bathrooms</span>
+                <Bath className="h-6 w-6 mx-auto mb-2 text-primary" />
+                <span className="text-foreground">{listing.details.bathrooms} bathrooms</span>
               </div>
               <div className="glass-card p-4 text-center">
-                <Users className="h-6 w-6 mx-auto mb-2 text-teal-500" />
-                <span className="text-white">Up to {listing.details.maxGuests} guests</span>
+                <Users className="h-6 w-6 mx-auto mb-2 text-primary" />
+                <span className="text-foreground">Up to {listing.details.maxGuests} guests</span>
               </div>
             </div>
 
             {/* Description */}
             <div className="mb-6">
-              <h2 className="text-2xl font-semibold text-white mb-4">About this place</h2>
-              <p className="text-teal-200/80">{listing.description}</p>
+              <h2 className="text-2xl font-semibold text-foreground mb-4">About this place</h2>
+              <p className="text-muted-foreground">{listing.description}</p>
             </div>
 
             {/* Amenities */}
             <div>
-              <h2 className="text-2xl font-semibold text-white mb-4">What this place offers</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-4">What this place offers</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {listing.amenities.map((amenity, index) => (
                   <div key={index} className="flex items-center space-x-2">
                     {amenityIcons[amenity.name]}
-                    <span className="text-teal-200/80">{amenity.name}</span>
+                    <span className="text-muted-foreground">{amenity.name}</span>
                   </div>
                 ))}
               </div>
@@ -188,21 +188,21 @@ export function ListingDetails({ listing }: { listing: Listing }) {
 
           {/* Reviews */}
           <div className="glass-card p-6">
-            <h2 className="text-2xl font-semibold text-white mb-6">
+            <h2 className="text-2xl font-semibold text-foreground mb-6">
               {listing.reviews.length} Reviews
             </h2>
             <div className="space-y-6">
               {listing.reviews.map((review, index) => (
-                <div key={index} className="border-b border-teal-500/20 pb-6 last:border-0">
+                <div key={index} className="border-b border-primary/20 pb-6 last:border-0">
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-semibold text-white">{review.user}</h3>
+                    <h3 className="font-semibold text-foreground">{review.user}</h3>
                     <div className="flex items-center">
-                      <Star className="h-4 w-4 fill-teal-400 text-teal-400 mr-1" />
-                      <span className="text-teal-200/80">{review.rating}</span>
+                      <Star className="h-4 w-4 fill-primary text-primary mr-1" />
+                      <span className="text-muted-foreground">{review.rating}</span>
                     </div>
                   </div>
-                  <p className="text-sm text-teal-200/60 mb-2">{review.date}</p>
-                  <p className="text-teal-200/80">{review.comment}</p>
+                  <p className="text-sm text-muted-foreground mb-2">{review.date}</p>
+                  <p className="text-muted-foreground">{review.comment}</p>
                 </div>
               ))}
             </div>
@@ -217,13 +217,13 @@ export function ListingDetails({ listing }: { listing: Listing }) {
           <div className="glass-card p-6 sticky top-6">
             <div className="flex justify-between items-center mb-6">
               <div>
-                <span className="text-2xl font-bold text-white">R{listing.price}</span>
-                <span className="text-teal-200/80"> / night</span>
+                <span className="text-2xl font-bold text-foreground">R{listing.price}</span>
+                <span className="text-muted-foreground"> / night</span>
               </div>
               <div className="flex items-center">
-                <Star className="h-4 w-4 fill-teal-400 text-teal-400 mr-1" />
-                <span className="text-teal-200/80">{listing.rating}</span>
-                <span className="text-teal-200/60 ml-1">
+                <Star className="h-4 w-4 fill-primary text-primary mr-1" />
+                <span className="text-muted-foreground">{listing.rating}</span>
+                <span className="text-muted-foreground ml-1">
                   ({listing.reviewCount} reviews)
                 </span>
               </div>
@@ -232,7 +232,7 @@ export function ListingDetails({ listing }: { listing: Listing }) {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-teal-200/80 mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
                     Check-in
                   </label>
                   <Calendar
@@ -243,7 +243,7 @@ export function ListingDetails({ listing }: { listing: Listing }) {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-teal-200/80 mb-1">
+                  <label className="block text-sm font-medium text-muted-foreground mb-1">
                     Check-out
                   </label>
                   <Calendar
@@ -255,11 +255,11 @@ export function ListingDetails({ listing }: { listing: Listing }) {
                 </div>
               </div>
 
-              <Button className="w-full bg-teal-500 hover:bg-teal-600">
+              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                 Reserve
               </Button>
 
-              <p className="text-center text-sm text-teal-200/60">
+              <p className="text-center text-sm text-muted-foreground">
                 You won&apos;t be charged yet
               </p>
             </div>

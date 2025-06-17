@@ -34,17 +34,17 @@ export function ListingCard({ listing }: { listing: Listing }) {
         <div className="p-4">
           <div className="flex justify-between items-start">
             <div>
-              <h3 className="font-semibold text-lg text-white">{listing.title}</h3>
-              <p className="text-sm text-teal-200/80">{listing.location}</p>
+              <h3 className="font-semibold text-lg text-foreground">{listing.title}</h3>
+              <p className="text-sm text-muted-foreground">{listing.location}</p>
             </div>
-            <div className="flex items-center bg-teal-500/20 px-2 py-1 rounded-full">
-              <Star className="h-4 w-4 fill-teal-400 text-teal-400" />
-              <span className="ml-1 text-sm text-teal-200">{listing.rating}</span>
+            <div className="flex items-center bg-primary/20 px-2 py-1 rounded-full">
+              <Star className="h-4 w-4 fill-primary text-primary" />
+              <span className="ml-1 text-sm text-primary">{listing.rating}</span>
             </div>
           </div>
           <div className="mt-4">
-            <p className="text-lg font-semibold text-white">
-              R{listing.price.toLocaleString()} <span className="text-sm font-normal text-teal-200/80">/ night</span>
+            <p className="text-lg font-semibold text-foreground">
+              R{listing.price.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">/ night</span>
             </p>
           </div>
         </div>

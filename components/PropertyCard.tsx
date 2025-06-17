@@ -59,31 +59,31 @@ export function PropertyCard({ property, showActions = false, onDelete }: Proper
       <div className="p-4">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-lg text-white">{property.title}</h3>
-            <p className="text-sm text-teal-200/80">{property.location}</p>
+            <h3 className="font-semibold text-lg text-foreground">{property.title}</h3>
+            <p className="text-sm text-muted-foreground">{property.location}</p>
           </div>
-          <div className="flex items-center bg-teal-500/20 px-2 py-1 rounded-full">
-            <Star className="h-4 w-4 fill-teal-400 text-teal-400" />
-            <span className="ml-1 text-sm text-teal-200">{property.rating}</span>
+          <div className="flex items-center bg-primary/20 px-2 py-1 rounded-full">
+            <Star className="h-4 w-4 fill-primary text-primary" />
+            <span className="ml-1 text-sm text-primary">{property.rating}</span>
           </div>
         </div>
         <div className="mt-4">
-          <p className="text-lg font-semibold text-white">
-            R{property.price.toLocaleString()} <span className="text-sm font-normal text-teal-200/80">/ night</span>
+          <p className="text-lg font-semibold text-foreground">
+            R{property.price.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">/ night</span>
           </p>
         </div>
         {showActions && (
           <div className="mt-4 flex justify-end space-x-2">
             <button
               onClick={handleEdit}
-              className="glass-button text-sm px-3 py-1"
+              className="glass-button text-sm px-3 py-1 text-foreground"
             >
               <Edit className="h-4 w-4 mr-1" />
               Edit
             </button>
             <button
               onClick={handleDelete}
-              className="glass-button text-sm px-3 py-1 text-red-400 hover:text-red-300"
+              className="glass-button text-sm px-3 py-1 text-destructive hover:text-destructive/80"
             >
               <Trash2 className="h-4 w-4 mr-1" />
               Delete

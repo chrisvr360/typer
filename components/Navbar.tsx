@@ -27,16 +27,9 @@ export function Navbar() {
   }, [])
 
   return (
-    <motion.nav
-      className={`glass-nav sticky top-0 z-50 transition-shadow duration-200 ${
-        !isAtTop ? 'shadow-lg' : ''
-      }`}
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.3 }}
-    >
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full">
+      <nav className={`${theme === 'dark' ? 'glass-nav' : 'glass'} border-b border-primary/20 shadow-lg`}>
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <motion.div
@@ -44,21 +37,21 @@ export function Navbar() {
               whileTap={{ scale: 0.95 }}
               className="relative w-10 h-10"
             >
-              <div className={`absolute inset-0 ${theme === 'dark' ? 'glass-dark' : 'glass'} rounded-full`} />
+              <div className={`absolute inset-0 ${theme === 'dark' ? 'glass-dark' : 'glass'} rounded-full shadow-lg`} />
               <div className="absolute inset-2 flex items-center justify-center">
-                <span className="text-2xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent">
+                <span className="text-2xl font-bold text-primary">
                   SA
                 </span>
               </div>
             </motion.div>
-            <span className="text-xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent">
-              
+            <span className="text-xl font-bold text-primary">
+              Accommodation South Africa
             </span>
           </Link>
 
           {/* Search Bar */}
-          <div className="hidden md:flex items-center space-x-2 glass rounded-full px-4 py-2 w-[400px]">
-            <Search className="h-4 w-4 text-teal-500" />
+          <div className="hidden md:flex items-center space-x-2 glass rounded-full px-4 py-2 w-[400px] shadow-lg">
+            <Search className="h-4 w-4 text-primary" />
             <input
               type="text"
               placeholder="Search destinations..."
@@ -73,7 +66,7 @@ export function Navbar() {
               variant="ghost"
               size="icon"
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="hover:bg-teal-500/10"
+              className="hover:bg-primary/10 text-foreground"
             >
               {mounted && theme === 'dark' ? (
                 <Sun className="h-5 w-5 text-primary" />
@@ -85,66 +78,66 @@ export function Navbar() {
             {/* Profile Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:bg-teal-500/10">
+                <Button variant="ghost" size="icon" className="hover:bg-primary/10 text-foreground">
                   <Menu className="h-5 w-5 text-primary" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 glass">
+              <DropdownMenuContent className="glass-card shadow-lg">
                 {session ? (
                   <>
                     <DropdownMenuLabel className="text-primary">My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator className="bg-teal-500/20" />
-                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                    <DropdownMenuSeparator className="bg-primary/20" />
+                    <DropdownMenuItem className="text-foreground hover:bg-primary/10 cursor-pointer">
                       <Link href="/profile" className="flex items-center w-full">
                         <User className="mr-2 h-4 w-4" />
                         Profile
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                    <DropdownMenuItem className="text-foreground hover:bg-primary/10 cursor-pointer">
                       <Link href="/listings/create" className="flex items-center w-full">
                         <Plus className="mr-2 h-4 w-4" />
                         Create Listing
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                    <DropdownMenuItem className="text-foreground hover:bg-primary/10 cursor-pointer">
                       <Link href="/listings" className="flex items-center w-full">
                         <Home className="mr-2 h-4 w-4" />
                         My Listings
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                    <DropdownMenuItem className="text-foreground hover:bg-primary/10 cursor-pointer">
                       <Link href="/bookings" className="flex items-center w-full">
                         <Calendar className="mr-2 h-4 w-4" />
                         My Bookings
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                    <DropdownMenuItem className="text-foreground hover:bg-primary/10 cursor-pointer">
                       <Link href="/favorites" className="flex items-center w-full">
                         <Heart className="mr-2 h-4 w-4" />
                         Favorites
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                    <DropdownMenuItem className="text-foreground hover:bg-primary/10 cursor-pointer">
                       <Link href="/reviews" className="flex items-center w-full">
                         <Star className="mr-2 h-4 w-4" />
                         Reviews
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                    <DropdownMenuItem className="text-foreground hover:bg-primary/10 cursor-pointer">
                       <Link href="/messages" className="flex items-center w-full">
                         <MessageSquare className="mr-2 h-4 w-4" />
                         Messages
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-teal-500/20" />
-                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                    <DropdownMenuSeparator className="bg-primary/20" />
+                    <DropdownMenuItem className="text-foreground hover:bg-primary/10 cursor-pointer">
                       <Link href="/settings" className="flex items-center w-full">
                         <Settings className="mr-2 h-4 w-4" />
                         Settings
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem 
-                      className="text-red-500 hover:bg-red-500/10 cursor-pointer"
+                      className="text-destructive hover:bg-destructive/10 cursor-pointer"
                       onClick={() => signOut()}
                     >
                       <div className="flex items-center w-full">
@@ -155,16 +148,10 @@ export function Navbar() {
                   </>
                 ) : (
                   <>
-                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                    <DropdownMenuItem className="text-foreground hover:bg-primary/10 cursor-pointer">
                       <Link href="/auth/signin" className="flex items-center w-full">
                         <LogIn className="mr-2 h-4 w-4" />
                         Sign In
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
-                      <Link href="/auth/signin" className="flex items-center w-full">
-                        <User className="mr-2 h-4 w-4" />
-                        Register
                       </Link>
                     </DropdownMenuItem>
                   </>
@@ -173,7 +160,7 @@ export function Navbar() {
             </DropdownMenu>
           </div>
         </div>
-      </div>
-    </motion.nav>
+      </nav>
+    </header>
   )
 } 

@@ -4,7 +4,38 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
-import { PROVINCES, Province } from '@/lib/constants';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Plus, X, Upload } from 'lucide-react';
+import Image from 'next/image';
+
+enum Category {
+  HOUSE = 'House',
+  APARTMENT = 'Apartment',
+  VILLA = 'Villa',
+  COTTAGE = 'Cottage',
+  GUESTHOUSE = 'Guesthouse',
+  BED_AND_BREAKFAST = 'Bed and Breakfast',
+  HOTEL = 'Hotel',
+  RESORT = 'Resort',
+  LODGE = 'Lodge',
+  CAMPING = 'Camping'
+}
+
+enum Province {
+  WESTERN_CAPE = 'Western Cape',
+  EASTERN_CAPE = 'Eastern Cape',
+  NORTHERN_CAPE = 'Northern Cape',
+  FREE_STATE = 'Free State',
+  KWAZULU_NATAL = 'KwaZulu-Natal',
+  NORTH_WEST = 'North West',
+  GAUTENG = 'Gauteng',
+  MPUMALANGA = 'Mpumalanga',
+  LIMPOPO = 'Limpopo'
+}
 
 interface FormData {
   title: string;
@@ -19,6 +50,7 @@ interface FormData {
   bedrooms: number;
   beds: number;
   baths: number;
+  category: string;
 }
 
 export default function CreateListingPage() {
@@ -41,8 +73,41 @@ export default function CreateListingPage() {
     guests: 0,
     bedrooms: 0,
     beds: 0,
-    baths: 0
+    baths: 0,
+    category: 'apartment'
   });
+
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    handleImageUpload({ target: { files } } as any);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      // Handle image upload logic here
+      // For now, we'll just add placeholder URLs
+      const newImages = Array.from(files).map(file => URL.createObjectURL(file));
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, ...newImages].slice(0, 6)
+      }));
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,6 +152,10 @@ export default function CreateListingPage() {
     }
   };
 
+  const handleRemoveImage = (index: number) => {
+    // Implement the logic to remove an image
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
@@ -97,198 +166,188 @@ export default function CreateListingPage() {
 
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* General Info Section */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-white">General Info</h2>
-              
-              <div>
-                <label htmlFor="title" className="block text-sm font-medium text-foreground mb-1">
-                  Name (20 limit)
-                </label>
-                <input
-                  type="text"
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="title" className="text-foreground">Title</Label>
+                <Input
                   id="title"
-                  maxLength={20}
                   value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  className="glass-input w-full"
-                  required
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  className="glass-input shadow-inner"
+                  placeholder="Enter property title"
                 />
               </div>
 
-              <div>
-                <label htmlFor="tagline" className="block text-sm font-medium text-foreground mb-1">
-                  Tagline (30 limit)
-                </label>
-                <input
-                  type="text"
+              <div className="space-y-2">
+                <Label htmlFor="tagline" className="text-foreground">Tagline</Label>
+                <Input
                   id="tagline"
-                  maxLength={30}
+                  className="glass-input shadow-inner"
+                  placeholder="Enter tagline"
                   value={formData.tagline}
-                  onChange={(e) => setFormData(prev => ({ ...prev, tagline: e.target.value }))}
-                  className="glass-input w-full"
-                  required
+                  onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
                 />
               </div>
 
-              <div>
-                <label htmlFor="location" className="block text-sm font-medium text-foreground mb-1">
-                  Location
-                </label>
-                <input
-                  type="text"
+              <div className="space-y-2">
+                <Label htmlFor="description" className="text-foreground">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  className="glass-input shadow-inner min-h-[150px]"
+                  placeholder="Describe your property..."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="location" className="text-foreground">Location</Label>
+                <Input
                   id="location"
                   value={formData.location}
-                  onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                  className="glass-input w-full"
-                  required
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  className="glass-input shadow-inner"
+                  placeholder="Enter property location"
                 />
               </div>
 
-              <div>
-                <label htmlFor="price" className="block text-sm font-medium text-foreground mb-1">
-                  Price (R)
-                </label>
-                <input
-                  type="number"
-                  id="price"
-                  min="0"
-                  value={formData.price}
-                  onChange={(e) => setFormData(prev => ({ ...prev, price: Number(e.target.value) }))}
-                  className="glass-input w-full"
-                  required
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="price" className="text-foreground">Price per Night</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: Number(e.target.value) })}
+                    className="glass-input shadow-inner"
+                    placeholder="Enter price"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="category" className="text-foreground">Category</Label>
+                  <Select
+                    value={formData.category}
+                    onValueChange={(value: string) => setFormData({ ...formData, category: value as Category })}
+                  >
+                    <SelectTrigger className="glass-input shadow-inner">
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent className="glass-card">
+                      {Object.values(Category).map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <div>
-                <label htmlFor="province" className="block text-sm font-medium text-foreground mb-1">
-                  Province
-                </label>
-                <select
-                  id="province"
+              <div className="space-y-2">
+                <Label htmlFor="province" className="text-foreground">Province</Label>
+                <Select
                   value={formData.province}
-                  onChange={(e) => setFormData(prev => ({ ...prev, province: e.target.value as Province }))}
-                  className="glass-input w-full"
-                  required
+                  onValueChange={(value: string) => setFormData({ ...formData, province: value as Province })}
                 >
-                  <option value="">Select a province</option>
-                  {PROVINCES.map((province) => (
-                    <option key={province.value} value={province.value}>
-                      {province.name}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="glass-input shadow-inner">
+                    <SelectValue placeholder="Select province" />
+                  </SelectTrigger>
+                  <SelectContent className="glass-card">
+                    {Object.values(Province).map((province) => (
+                      <SelectItem key={province} value={province}>
+                        {province}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-foreground mb-1">
-                  Description (10 - 1000 words)
-                </label>
-                <textarea
-                  id="description"
-                  minLength={10}
-                  maxLength={1000}
-                  value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  className="glass-input w-full h-32"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Accommodation Details Section */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-white">Accommodation Details</h2>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div>
-                  <label htmlFor="guests" className="block text-sm font-medium text-foreground mb-1">
-                    Guests
-                  </label>
-                  <input
-                    type="number"
-                    id="guests"
-                    min="0"
-                    value={formData.guests}
-                    onChange={(e) => setFormData(prev => ({ ...prev, guests: Number(e.target.value) }))}
-                    className="glass-input w-full"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="bedrooms" className="block text-sm font-medium text-foreground mb-1">
-                    Bedrooms
-                  </label>
-                  <input
-                    type="number"
-                    id="bedrooms"
-                    min="0"
-                    value={formData.bedrooms}
-                    onChange={(e) => setFormData(prev => ({ ...prev, bedrooms: Number(e.target.value) }))}
-                    className="glass-input w-full"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="beds" className="block text-sm font-medium text-foreground mb-1">
-                    Beds
-                  </label>
-                  <input
-                    type="number"
-                    id="beds"
-                    min="0"
-                    value={formData.beds}
-                    onChange={(e) => setFormData(prev => ({ ...prev, beds: Number(e.target.value) }))}
-                    className="glass-input w-full"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="baths" className="block text-sm font-medium text-foreground mb-1">
-                    Baths
-                  </label>
-                  <input
-                    type="number"
-                    id="baths"
-                    min="0"
-                    value={formData.baths}
-                    onChange={(e) => setFormData(prev => ({ ...prev, baths: Number(e.target.value) }))}
-                    className="glass-input w-full"
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Amenities Section */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-white">Amenities</h2>
-              
-              <div>
-                <label htmlFor="amenities" className="block text-sm font-medium text-foreground mb-1">
-                  Enter amenities (comma-separated)
-                </label>
-                <textarea
+              <div className="space-y-2">
+                <Label htmlFor="amenities" className="text-foreground">Amenities</Label>
+                <Textarea
                   id="amenities"
+                  className="glass-input shadow-inner h-32"
+                  placeholder="Enter amenities (comma-separated)"
                   value={formData.amenities}
-                  onChange={(e) => setFormData(prev => ({ ...prev, amenities: e.target.value }))}
-                  className="glass-input w-full h-32"
-                  placeholder="e.g., WiFi, Parking, Kitchen, Pool"
-                  required
+                  onChange={(e) => setFormData({ ...formData, amenities: e.target.value })}
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="guests" className="text-foreground">Guests</Label>
+                <Input
+                  id="guests"
+                  type="number"
+                  className="glass-input shadow-inner"
+                  value={formData.guests}
+                  onChange={(e) => setFormData({ ...formData, guests: Number(e.target.value) })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="bedrooms" className="text-foreground">Bedrooms</Label>
+                <Input
+                  id="bedrooms"
+                  type="number"
+                  className="glass-input shadow-inner"
+                  value={formData.bedrooms}
+                  onChange={(e) => setFormData({ ...formData, bedrooms: Number(e.target.value) })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="beds" className="text-foreground">Beds</Label>
+                <Input
+                  id="beds"
+                  type="number"
+                  className="glass-input shadow-inner"
+                  value={formData.beds}
+                  onChange={(e) => setFormData({ ...formData, beds: Number(e.target.value) })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="baths" className="text-foreground">Baths</Label>
+                <Input
+                  id="baths"
+                  type="number"
+                  className="glass-input shadow-inner"
+                  value={formData.baths}
+                  onChange={(e) => setFormData({ ...formData, baths: Number(e.target.value) })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-foreground">Images</Label>
+                <div className={`glass-input shadow-inner p-4 border-2 border-dashed rounded-lg ${isDragging ? 'border-primary' : 'border-primary/20'}`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <div className="text-center">
+                    <Upload className="mx-auto h-12 w-12 text-primary mb-2" />
+                    <p className="text-foreground">Drag and drop images here, or click to select</p>
+                    <p className="text-sm text-muted-foreground mt-1">PNG, JPG up to 10MB</p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                className="glass-button"
-                disabled={loading}
+            <div className="flex justify-end space-x-4">
+              <Button
+                variant="outline"
+                onClick={() => router.back()}
+                className="glass-button shadow-inner"
               >
-                {loading ? 'Creating...' : 'Create Listing'}
-              </button>
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                className="glass-button shadow-inner"
+              >
+                Create Listing
+              </Button>
             </div>
           </form>
         </div>

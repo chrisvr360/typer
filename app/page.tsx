@@ -233,10 +233,10 @@ export default function Home() {
       {/* Featured Properties Section */}
       <div>
         <div className="glass-card flex justify-between items-center">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-foreground">
             Featured Properties
           </h1>
-          <Button variant="outline" className="hover:bg-teal-500/10">View All</Button>
+          <Button variant="outline" className="hover:bg-primary/10">View All</Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
@@ -259,17 +259,17 @@ export default function Home() {
                 <div className="p-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="font-semibold text-lg text-white">{property.title}</h3>
-                      <p className="text-sm text-teal-200/80">{property.location}</p>
+                      <h3 className="font-semibold text-lg text-foreground">{property.title}</h3>
+                      <p className="text-sm text-muted-foreground">{property.location}</p>
                     </div>
-                    <div className="flex items-center bg-teal-500/20 px-2 py-1 rounded-full">
-                      <Star className="h-4 w-4 fill-teal-400 text-teal-400" />
-                      <span className="ml-1 text-sm text-teal-200">{property.rating}</span>
+                    <div className="flex items-center bg-primary/20 px-2 py-1 rounded-full">
+                      <Star className="h-4 w-4 fill-primary text-primary" />
+                      <span className="ml-1 text-sm text-primary">{property.rating}</span>
                     </div>
                   </div>
                   <div className="mt-4">
-                    <p className="text-lg font-semibold text-white">
-                      R{property.price.toLocaleString()} <span className="text-sm font-normal text-teal-200/80">/ night</span>
+                    <p className="text-lg font-semibold text-foreground">
+                      R{property.price.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">/ night</span>
                     </p>
                   </div>
                 </div>
@@ -283,11 +283,11 @@ export default function Home() {
       {provinces.map((province) => (
         <div key={province.slug}>
           <div className="glass-card flex justify-between items-center">
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent">
+            <h2 className="text-3xl font-bold text-foreground">
               {province.name}
             </h2>
             <Link href={`/province/${province.slug}`}>
-              <Button variant="outline" className="hover:bg-teal-500/10">View All</Button>
+              <Button variant="outline" className="hover:bg-primary/10">View All</Button>
             </Link>
           </div>
 
@@ -310,17 +310,17 @@ export default function Home() {
                   <div className="p-4">
                     <div className="flex justify-between items-start">
                       <div>
-                        <h3 className="font-semibold text-lg text-white">{property.title}</h3>
-                        <p className="text-sm text-teal-200/80">{property.location}</p>
+                        <h3 className="font-semibold text-lg text-foreground">{property.title}</h3>
+                        <p className="text-sm text-muted-foreground">{property.location}</p>
                       </div>
-                      <div className="flex items-center bg-teal-500/20 px-2 py-1 rounded-full">
-                        <Star className="h-4 w-4 fill-teal-400 text-teal-400" />
-                        <span className="ml-1 text-sm text-teal-200">{property.rating}</span>
+                      <div className="flex items-center bg-primary/20 px-2 py-1 rounded-full">
+                        <Star className="h-4 w-4 fill-primary text-primary" />
+                        <span className="ml-1 text-sm text-primary">{property.rating}</span>
                       </div>
                     </div>
                     <div className="mt-4">
-                      <p className="text-lg font-semibold text-white">
-                        R{property.price.toLocaleString()} <span className="text-sm font-normal text-teal-200/80">/ night</span>
+                      <p className="text-lg font-semibold text-foreground">
+                        R{property.price.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">/ night</span>
                       </p>
                     </div>
                   </div>
