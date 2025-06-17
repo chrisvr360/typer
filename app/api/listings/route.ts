@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import connectDB from '@/lib/mongodb';
 import Property from '@/models/Property';
 import User from '@/models/User';
-import { Province } from '@/lib/constants';
 
 // GET /api/listings - Get all listings or user's listings
 export async function GET(req: Request) {
-  const session = await getServerSession();
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get('userId');
   const category = searchParams.get('category');
@@ -38,7 +37,7 @@ export async function GET(req: Request) {
 
 // POST /api/listings - Create a new listing
 export async function POST(req: Request) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
     return NextResponse.json(

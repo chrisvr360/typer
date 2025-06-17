@@ -31,7 +31,11 @@ export default function CreateListingPage() {
     description: '',
     location: '',
     price: 0,
-    images: [],
+    images: [
+      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=60',
+      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=60',
+      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&auto=format&fit=crop&q=60',
+    ],
     province: '' as Province,
     amenities: '',
     guests: 0,
@@ -45,6 +49,11 @@ export default function CreateListingPage() {
     
     if (!session?.user) {
       toast.error('Please sign in to create a listing');
+      return;
+    }
+
+    if (!formData.location) {
+      toast.error('Please enter a location');
       return;
     }
 
@@ -76,16 +85,6 @@ export default function CreateListingPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // For testing, we'll use placeholder images
-    const placeholders = [
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&auto=format&fit=crop&q=60',
-    ];
-    setFormData(prev => ({ ...prev, images: placeholders }));
   };
 
   return (
@@ -126,6 +125,20 @@ export default function CreateListingPage() {
                   maxLength={30}
                   value={formData.tagline}
                   onChange={(e) => setFormData(prev => ({ ...prev, tagline: e.target.value }))}
+                  className="glass-input w-full"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="location" className="block text-sm font-medium text-foreground mb-1">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
                   className="glass-input w-full"
                   required
                 />
@@ -265,28 +278,6 @@ export default function CreateListingPage() {
                   placeholder="e.g., WiFi, Parking, Kitchen, Pool"
                   required
                 />
-              </div>
-            </div>
-
-            {/* Images Section */}
-            <div className="space-y-6">
-              <h2 className="text-xl font-semibold text-white">Images</h2>
-              
-              <div>
-                <label htmlFor="images" className="block text-sm font-medium text-foreground mb-1">
-                  Upload Images
-                </label>
-                <input
-                  type="file"
-                  id="images"
-                  multiple
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="glass-input w-full"
-                />
-                <p className="text-sm text-muted-foreground mt-1">
-                  For testing, this will use placeholder images
-                </p>
               </div>
             </div>
 

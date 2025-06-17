@@ -1,7 +1,7 @@
 // app/province/[slug]/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { ProvinceSearch } from '@/app/province/[slug]/province-search';
 import { ListingCard } from '@/app/province/[slug]/listing-card';
@@ -45,7 +45,7 @@ export default function ProvincePage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     try {
       const response = await fetch(`/api/listings?category=${params.slug}`);
       if (response.ok) {
@@ -60,7 +60,7 @@ export default function ProvincePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.slug]);
 
   useEffect(() => {
     if (params.slug) {

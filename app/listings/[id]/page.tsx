@@ -1,7 +1,7 @@
 // app/listings/[id]/page.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { ListingDetails } from './listing-details';
 import { toast } from 'sonner';
@@ -44,7 +44,7 @@ export default function ListingPage() {
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchListing = async () => {
+  const fetchListing = useCallback(async () => {
     try {
       const response = await fetch(`/api/listings/${params.id}`);
       if (response.ok) {
@@ -87,11 +87,11 @@ export default function ListingPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.id]);
 
   useEffect(() => {
     fetchListing();
-  }, [params.id, fetchListing]);
+  }, [fetchListing]);
 
   if (loading) {
     return (

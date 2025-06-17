@@ -1,40 +1,39 @@
-import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import connectDB from '@/lib/mongodb';
-import Property from '@/models/Property';
-import User from '@/models/User';
+// app/api/listings/[id]/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession }          from 'next-auth';
+import connectDB                     from '@/lib/mongodb';
+import Property                      from '@/models/Property';
+import User                          from '@/models/User';
+
+// Ensure getServerSession runs in Node.js
+export const runtime = 'nodejs';
+
+// Context where params.id comes in as a Promise
+type RouteContext = { params: Promise<{ id: string }> };
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
-  const session = await getServerSession();
+  request: NextRequest,
+  { params }: RouteContext
+): Promise<NextResponse> {
+  const { id } = await params;
 
+  const session = await getServerSession();
   if (!session?.user?.email) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
     await connectDB();
 
-    // Get the user's ID from their email
     const user = await User.findOne({ email: session.user.email });
     if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Find the listing and verify ownership
     const listing = await Property.findOne({
-      _id: params.id,
-      owner: user._id
+      _id:   id,
+      owner: user._id,
     });
-
     if (!listing) {
       return NextResponse.json(
         { error: 'Listing not found or unauthorized' },
@@ -42,12 +41,9 @@ export async function DELETE(
       );
     }
 
-    // Delete the listing
-    await Property.findByIdAndDelete(params.id);
-
-    // Remove the listing from the user's properties array
+    await Property.findByIdAndDelete(id);
     await User.findByIdAndUpdate(user._id, {
-      $pull: { properties: params.id }
+      $pull: { properties: id },
     });
 
     return NextResponse.json(
@@ -64,20 +60,20 @@ export async function DELETE(
 }
 
 export async function GET(
-  req: Request,
-  { params }: { params: { id: string } }
-) {
+  request: NextRequest,
+  { params }: RouteContext
+): Promise<NextResponse> {
+  const { id } = await params;
+
   try {
     await connectDB();
 
-    const listing = await Property.findById(params.id)
-      .populate('owner', 'firstName lastName email');
-
+    const listing = await Property.findById(id).populate(
+      'owner',
+      'firstName lastName email'
+    );
     if (!listing) {
-      return NextResponse.json(
-        { error: 'Listing not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Listing not found' }, { status: 404 });
     }
 
     return NextResponse.json(listing);
@@ -88,4 +84,4 @@ export async function GET(
       { status: 500 }
     );
   }
-} 
+}

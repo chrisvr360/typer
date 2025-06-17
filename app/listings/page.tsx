@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -29,7 +29,7 @@ export default function MyListingsPage() {
   const [listings, setListings] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchListings = async () => {
+  const fetchListings = useCallback(async () => {
     try {
       const response = await fetch('/api/listings?userId=' + session?.user?.id);
       if (response.ok) {
@@ -44,7 +44,7 @@ export default function MyListingsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [session?.user?.id]);
 
   useEffect(() => {
     if (!session?.user) {
