@@ -25,13 +25,6 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (status === 'loading') return;
-
-    if (!session || !session.user) {
-      router.push('/auth/signin');
-      return;
-    }
-
     const fetchProfile = async () => {
       try {
         const response = await fetch('/api/profile');
@@ -59,7 +52,7 @@ export default function ProfilePage() {
     if (session?.user) {
       fetchProfile();
     }
-  }, [session, router]);
+  }, [session, router, status]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -189,9 +182,23 @@ export default function ProfilePage() {
                   fill
                   className="object-cover"
                   priority
+                  sizes="(max-width: 768px) 96px, 96px"
+                  quality={90}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/images/placeholder-avatar.jpg';
+                  }}
                 />
               ) : (
-                <span>No Image</span>
+                <Image
+                  src="/images/placeholder-avatar.jpg"
+                  alt="Default Profile"
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 96px, 96px"
+                  quality={90}
+                />
               )}
             </div>
             <input

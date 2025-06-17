@@ -47,7 +47,7 @@ export async function PUT(req: Request) {
   }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
   const session = await getServerSession();
 
   if (!session?.user?.email) {

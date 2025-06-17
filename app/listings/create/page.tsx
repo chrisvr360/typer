@@ -174,6 +174,13 @@ export default function CreateListingPage() {
                       alt={`Property image ${index + 1}`}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+                      quality={85}
+                      priority={index < 4}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/images/placeholder-property.jpg';
+                      }}
                     />
                     <button
                       type="button"
@@ -186,10 +193,14 @@ export default function CreateListingPage() {
                 ))}
                 {formData.images.length < 10 && (
                   <div
-                    className="aspect-square rounded-lg border-2 border-dashed border-gray-400 flex items-center justify-center cursor-pointer hover:border-teal-500 transition-colors"
+                    className={`aspect-square rounded-lg border-2 border-dashed ${
+                      uploadingImages ? 'border-teal-500' : 'border-gray-400'
+                    } flex items-center justify-center cursor-pointer hover:border-teal-500 transition-colors`}
                     onClick={() => fileInputRef.current?.click()}
                   >
-                    <span className="text-gray-400">Add Image</span>
+                    <span className={`text-${uploadingImages ? 'teal-500' : 'gray-400'}`}>
+                      {uploadingImages ? 'Uploading...' : 'Add Image'}
+                    </span>
                   </div>
                 )}
               </div>
@@ -200,6 +211,7 @@ export default function CreateListingPage() {
                 accept="image/*"
                 multiple
                 className="hidden"
+                disabled={uploadingImages}
               />
               <p className="text-sm text-gray-400">
                 Upload up to 10 images. Each image should be less than 5MB.
