@@ -45,12 +45,6 @@ export default function ProvincePage() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (params.slug) {
-      fetchListings();
-    }
-  }, [params.slug]);
-
   const fetchListings = async () => {
     try {
       const response = await fetch(`/api/listings?category=${params.slug}`);
@@ -67,6 +61,12 @@ export default function ProvincePage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (params.slug) {
+      fetchListings();
+    }
+  }, [params.slug, fetchListings]);
 
   if (loading) {
     return (

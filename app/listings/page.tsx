@@ -29,15 +29,6 @@ export default function MyListingsPage() {
   const [listings, setListings] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!session?.user) {
-      router.push('/auth/signin');
-      return;
-    }
-
-    fetchListings();
-  }, [session]);
-
   const fetchListings = async () => {
     try {
       const response = await fetch('/api/listings?userId=' + session?.user?.id);
@@ -54,6 +45,15 @@ export default function MyListingsPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!session?.user) {
+      router.push('/auth/signin');
+      return;
+    }
+
+    fetchListings();
+  }, [session, router, fetchListings]);
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -95,7 +95,7 @@ export default function MyListingsPage() {
 
       {listings.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-lg text-gray-600 mb-4">You haven't created any listings yet.</p>
+          <p className="text-lg text-gray-600 mb-4">You haven&apos;t created any listings yet.</p>
           <Button onClick={() => router.push('/listings/create')}>
             Create Your First Listing
           </Button>

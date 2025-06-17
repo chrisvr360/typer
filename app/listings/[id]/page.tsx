@@ -44,10 +44,6 @@ export default function ListingPage() {
   const [listing, setListing] = useState<Listing | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchListing();
-  }, [params.id]);
-
   const fetchListing = async () => {
     try {
       const response = await fetch(`/api/listings/${params.id}`);
@@ -93,6 +89,10 @@ export default function ListingPage() {
     }
   };
 
+  useEffect(() => {
+    fetchListing();
+  }, [params.id, fetchListing]);
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -106,7 +106,7 @@ export default function ListingPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-white mb-4">Listing Not Found</h1>
-          <p className="text-teal-200/80">The listing you're looking for doesn't exist.</p>
+          <p className="text-teal-200/80">The listing you&apos;re looking for doesn&apos;t exist.</p>
         </div>
       </div>
     );
