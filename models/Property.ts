@@ -3,70 +3,91 @@ import mongoose from 'mongoose'
 const propertySchema = new mongoose.Schema({
   title: {
     type: String,
-    required: [true, 'Please provide a title for the property'],
-    trim: true,
+    required: true,
+    maxlength: 20
+  },
+  tagline: {
+    type: String,
+    required: true,
+    maxlength: 30
   },
   description: {
     type: String,
-    required: [true, 'Please provide a description'],
+    required: true,
+    minlength: 10,
+    maxlength: 1000
   },
   location: {
     type: String,
-    required: [true, 'Please provide a location'],
+    required: true
+  },
+  coordinates: {
+    type: {
+      lat: Number,
+      lng: Number
+    },
+    default: { lat: 0, lng: 0 }
   },
   price: {
     type: Number,
-    required: [true, 'Please provide a price'],
+    required: true,
+    min: 0
   },
-  images: [{
-    type: String,
-    required: [true, 'Please provide at least one image'],
-  }],
-  category: {
-    type: String,
-    required: [true, 'Please provide a category'],
-    enum: ['houses', 'mountain-view', 'beachfront', 'camping', 'apartments', 'luxury'],
-  },
-  amenities: [{
-    type: String,
-  }],
   rating: {
     type: Number,
     default: 0,
     min: 0,
-    max: 5,
+    max: 5
   },
-  reviews: [{
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-    rating: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 5,
-    },
-    comment: String,
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+  reviewCount: {
+    type: Number,
+    default: 0
+  },
+  images: [{
+    type: String,
+    required: true
+  }],
+  category: {
+    type: String,
+    required: true,
+    enum: ['eastern-cape', 'free-state', 'gauteng', 'kwazulu-natal', 'limpopo', 'mpumalanga', 'northern-cape', 'north-west', 'western-cape']
+  },
+  amenities: [{
+    type: String
   }],
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+    required: true
+  },
+  guests: {
+    type: Number,
     required: true,
+    min: 0
+  },
+  bedrooms: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  beds: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  baths: {
+    type: Number,
+    required: true,
+    min: 0
   },
   createdAt: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
   updatedAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 })
 
 // Update the updatedAt timestamp before saving

@@ -6,25 +6,24 @@ import { Star } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface Listing {
-  id: number;
+  _id: string;
   title: string;
   location: string;
   price: number;
   rating: number;
-  reviews: number;
-  image: string;
+  images: string[];
   description: string;
 }
 
 export function ListingCard({ listing }: { listing: Listing }) {
   return (
-    <Link href={`/listings/${listing.id}`}>
+    <Link href={`/listings/${listing._id}`}>
       <motion.div
         className="glass-card group overflow-hidden cursor-pointer"
       >
         <div className="aspect-video relative rounded-lg overflow-hidden">
           <Image
-            src={listing.image}
+            src={listing.images[0] || '/placeholder.jpg'}
             alt={listing.title}
             fill
             className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110"

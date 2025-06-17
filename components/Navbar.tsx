@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Button } from './ui/button'
-import { Menu, Search, Moon, Sun, User, Home, Calendar, Settings, LogOut, Heart, Star, MessageSquare, LogIn } from 'lucide-react'
+import { Menu, Search, Moon, Sun, User, Home, Calendar, Settings, LogOut, Heart, Star, MessageSquare, LogIn, Plus } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useSession, signOut } from 'next-auth/react'
 import {
@@ -98,6 +98,12 @@ export function Navbar() {
                       <Link href="/profile" className="flex items-center w-full">
                         <User className="mr-2 h-4 w-4" />
                         Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">
+                      <Link href="/listings/create" className="flex items-center w-full">
+                        <Plus className="mr-2 h-4 w-4" />
+                        Create Listing
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="text-primary hover:bg-teal-500/10 cursor-pointer">

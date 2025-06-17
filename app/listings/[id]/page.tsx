@@ -1,131 +1,116 @@
 // app/listings/[id]/page.tsx
-import React from 'react'
-import { ListingDetails } from './listing-details'
+'use client';
 
-type PageParams = Promise<{ id: string }>
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import { ListingDetails } from './listing-details';
+import { toast } from 'sonner';
 
-const listings = {
-  "1": {
-    id: 1,
-    title: "Luxury Beachfront Villa",
-    location: "Cape Town, South Africa",
+interface Listing {
+  id: number;
+  title: string;
+  location: string;
     coordinates: {
-      lat: -33.9249,
-      lng: 18.4241
-    },
-    price: 2500,
-    rating: 4.9,
-    reviewCount: 128,
-    description: "Experience the ultimate luxury in this stunning beachfront villa. With panoramic ocean views, private pool, and modern amenities, this is the perfect getaway for those seeking both comfort and adventure.",
-    amenities: [
-      { name: "Free WiFi" },
-      { name: "Free Parking" },
-      { name: "Coffee Maker" },
-      { name: "Kitchen" },
-      { name: "Smart TV" },
-      { name: "Air Conditioning" }
-    ],
-    images: [
-      "/images/villa1.jpg",
-      "/images/villa2.jpg",
-      "/images/villa3.jpg",
-      "/images/villa4.jpg"
-    ],
+    lat: number;
+    lng: number;
+  };
+  price: number;
+  rating: number;
+  reviewCount: number;
+  description: string;
+  amenities: { name: string }[];
+  images: string[];
     host: {
-      name: "Sarah Johnson",
-      avatar: "/images/host1.jpg",
-      joined: "2018",
-      responseTime: "within an hour"
-    },
+    name: string;
+    avatar: string;
+    joined: string;
+    responseTime: string;
+  };
     details: {
-      bedrooms: 4,
-      bathrooms: 3,
-      maxGuests: 8
-    },
-    reviews: [
-      {
-        user: "Michael Brown",
-        rating: 5,
-        date: "March 2024",
-        comment: "Absolutely amazing stay! The views were breathtaking and the amenities were top-notch."
-      },
-      {
-        user: "Emma Wilson",
-        rating: 4.8,
-        date: "February 2024",
-        comment: "Beautiful property with everything you need. The host was very responsive and helpful."
-      }
-    ]
-  },
-  "2": {
-    id: 2,
-    title: "Mountain View Cabin",
-    location: "Drakensberg, South Africa",
-    coordinates: {
-      lat: -29.2333,
-      lng: 29.4500
-    },
-    price: 1800,
-    rating: 4.7,
-    reviewCount: 95,
-    description: "Escape to this cozy mountain cabin surrounded by nature. Perfect for hiking enthusiasts and those looking for a peaceful retreat with stunning mountain views.",
-    amenities: [
-      { name: "Free WiFi" },
-      { name: "Free Parking" },
-      { name: "Coffee Maker" },
-      { name: "Kitchen" },
-      { name: "Smart TV" },
-      { name: "Air Conditioning" }
-    ],
-    images: [
-      "/images/cabin1.jpg",
-      "/images/cabin2.jpg",
-      "/images/cabin3.jpg",
-      "/images/cabin4.jpg"
-    ],
-    host: {
-      name: "David Smith",
-      avatar: "/images/host2.jpg",
-      joined: "2019",
-      responseTime: "within 2 hours"
-    },
-    details: {
-      bedrooms: 3,
-      bathrooms: 2,
-      maxGuests: 6
-    },
-    reviews: [
-      {
-        user: "Lisa Anderson",
-        rating: 4.9,
-        date: "March 2024",
-        comment: "The cabin was perfect for our family getaway. The views were spectacular!"
-      },
-      {
-        user: "John Davis",
-        rating: 4.6,
-        date: "February 2024",
-        comment: "Great location for hiking and enjoying nature. The cabin was very comfortable."
-      }
-    ]
-  }
+    bedrooms: number;
+    bathrooms: number;
+    maxGuests: number;
+  };
+  reviews: {
+    user: string;
+    rating: number;
+    date: string;
+    comment: string;
+  }[];
 }
 
-export default async function ListingPage({ params }: { params: PageParams }) {
-  // Next.js 15 now makes `params` a Promise, so we have to await it:
-  const { id } = await params
-  const listing = listings[id as keyof typeof listings]
+export default function ListingPage() {
+  const params = useParams();
+  const [listing, setListing] = useState<Listing | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchListing();
+  }, [params.id]);
+
+  const fetchListing = async () => {
+    try {
+      const response = await fetch(`/api/listings/${params.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        // Transform the data to match the expected format
+        const transformedListing = {
+          id: parseInt(data._id), // Convert MongoDB _id to number
+          title: data.title,
+          location: data.location,
+    coordinates: {
+            lat: -33.9249, // Default coordinates for now
+            lng: 18.4241
+    },
+          price: data.price,
+          rating: data.rating || 0,
+          reviewCount: 0, // Default review count
+          description: data.description,
+          amenities: data.amenities.map((amenity: string) => ({ name: amenity })),
+          images: data.images,
+    host: {
+            name: `${data.owner.firstName} ${data.owner.lastName}`,
+            avatar: '/placeholder-avatar.jpg',
+            joined: '2024',
+            responseTime: 'within an hour'
+    },
+    details: {
+            bedrooms: 2, // Default values
+            bathrooms: 1,
+            maxGuests: 4
+    },
+          reviews: [] // Empty reviews array
+        };
+        setListing(transformedListing);
+      } else {
+        toast.error('Failed to fetch listing');
+      }
+    } catch (error) {
+      console.error('Error fetching listing:', error);
+      toast.error('An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">Loading listing...</div>
+      </div>
+    );
+  }
 
   if (!listing) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-white mb-4">Listing Not Found</h1>
-          <p className="text-teal-200/80">The listing you&apos;re looking for doesn&apos;t exist.</p>
+          <p className="text-teal-200/80">The listing you're looking for doesn't exist.</p>
         </div>
       </div>
-    )
+    );
   }
 
-  return <ListingDetails listing={listing} />
+  return <ListingDetails listing={listing} />;
 }

@@ -1,17 +1,20 @@
 // app/province/[slug]/page.tsx
-import React from 'react'
-import { ProvinceSearch } from '@/app/province/[slug]/province-search'
-import { ListingCard } from '@/app/province/[slug]/listing-card'
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import { ProvinceSearch } from '@/app/province/[slug]/province-search';
+import { ListingCard } from '@/app/province/[slug]/listing-card';
+import { toast } from 'sonner';
 
 interface Listing {
-  id: number
-  title: string
-  location: string
-  price: number
-  rating: number
-  reviews: number
-  image: string
-  description: string
+  _id: string;
+  title: string;
+  location: string;
+  price: number;
+  rating: number;
+  images: string[];
+  description: string;
 }
 
 type ProvinceSlug =
@@ -23,7 +26,7 @@ type ProvinceSlug =
   | 'gauteng'
   | 'limpopo'
   | 'mpumalanga'
-  | 'north-west'
+  | 'north-west';
 
 const provinceNames: Record<ProvinceSlug, string> = {
   'eastern-cape': 'Eastern Cape',
@@ -35,71 +38,69 @@ const provinceNames: Record<ProvinceSlug, string> = {
   'limpopo': 'Limpopo',
   'mpumalanga': 'Mpumalanga',
   'north-west': 'North West',
-}
+};
 
-const dummyListings: Record<ProvinceSlug, Listing[]> = {
-  'eastern-cape': [
-    {
-      id: 1,
-      title: 'Beachfront Villa',
-      location: 'Port Elizabeth',
-      price: 2500,
-      rating: 4.8,
-      reviews: 124,
-      image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=60',
-      description: 'Luxurious beachfront villa with stunning ocean views',
-    },
-  ],
-  'western-cape': [
-    {
-      id: 2,
-      title: 'Mountain View Cottage',
-      location: 'Cape Town',
-      price: 1800,
-      rating: 4.9,
-      reviews: 156,
-      image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=60',
-      description: 'Cozy cottage with panoramic mountain views',
-    },
-  ],
-  'northern-cape': [],
-  'free-state': [],
-  'kwa-zulu-natal': [],
-  'gauteng': [],
-  'limpopo': [],
-  'mpumalanga': [],
-  'north-west': [],
-}
+export default function ProvincePage() {
+  const params = useParams();
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(true);
 
-type PageParams = { params: Promise<{ slug: ProvinceSlug }> }
+  useEffect(() => {
+    if (params.slug) {
+      fetchListings();
+    }
+  }, [params.slug]);
 
-export default async function ProvincePage({ params }: PageParams) {
-  // await the incoming params promise
-  const { slug } = await params
+  const fetchListings = async () => {
+    try {
+      const response = await fetch(`/api/listings?category=${params.slug}`);
+      if (response.ok) {
+        const data = await response.json();
+        setListings(data);
+      } else {
+        toast.error('Failed to fetch listings');
+      }
+    } catch (error) {
+      console.error('Error fetching listings:', error);
+      toast.error('An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const provinceListings = dummyListings[slug] || []
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">Loading listings...</div>
+      </div>
+    );
+  }
+
+  const provinceName = params.slug
+    ? provinceNames[params.slug as ProvinceSlug]
+    : 'Unknown Province';
 
   return (
     <div className="space-y-8">
       <div className="glass-card flex justify-between items-center">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-teal-400 to-teal-600 bg-clip-text text-transparent">
-          {provinceNames[slug]} Properties
+          {provinceName} Properties
         </h1>
         <ProvinceSearch />
       </div>
 
-      {provinceListings.length === 0 ? (
+      {listings.length === 0 ? (
         <div className="glass-card text-center py-12">
           <h2 className="text-2xl font-semibold mb-2">No properties found</h2>
           <p className="text-teal-200/80">Try adjusting your search criteria</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {provinceListings.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
+          {listings.map((listing) => (
+            <ListingCard key={listing._id} listing={listing} />
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }
