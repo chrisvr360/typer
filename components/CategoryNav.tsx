@@ -28,43 +28,45 @@ export function CategoryNav() {
     <AnimatePresence>
       {shouldShow && (
         <motion.nav
-          className="glass-nav sticky top-[72px] z-40"
+          className="sticky top-[72px] z-40 mt-4"
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
           <div className="container mx-auto px-4">
-            <div className="flex items-center justify-center space-x-4 py-4 overflow-x-auto">
-              {provinces.map((province) => {
-                const isActive = pathname === `/province/${province.slug}`;
-                return (
-                  <Link
-                    key={province.slug}
-                    href={`/province/${province.slug}`}
-                    className="relative"
-                  >
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                        isActive
-                          ? "glass text-primary"
-                          : "hover:bg-teal-500/10 text-muted-foreground"
-                      }`}
+            <div className="glass-card max-w-6xl mx-auto rounded-full !p-0">
+              <div className="flex items-center justify-center space-x-4 py-1 overflow-x-auto scrollbar-hide">
+                {provinces.map((province) => {
+                  const isActive = pathname === `/province/${province.slug}`;
+                  return (
+                    <Link
+                      key={province.slug}
+                      href={`/province/${province.slug}`}
+                      className="relative whitespace-nowrap"
                     >
-                      {province.name}
-                    </motion.div>
-                    {isActive && (
                       <motion.div
-                        layoutId="activeProvince"
-                        className="absolute inset-0 glass rounded-full"
-                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                      />
-                    )}
-                  </Link>
-                );
-              })}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`px-2.5 py-2.5 rounded-full text-sm font-medium transition-colors ${
+                          isActive
+                            ? "glass text-primary"
+                            : "hover:bg-teal-500/10 text-muted-foreground"
+                        }`}
+                      >
+                        {province.name}
+                      </motion.div>
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeProvince"
+                          className="absolute inset-0 glass rounded-full"
+                          transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                        />
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </motion.nav>

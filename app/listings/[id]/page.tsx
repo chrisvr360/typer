@@ -9,6 +9,10 @@ const listings = {
     id: 1,
     title: "Luxury Beachfront Villa",
     location: "Cape Town, South Africa",
+    coordinates: {
+      lat: -33.9249,
+      lng: 18.4241
+    },
     price: 2500,
     rating: 4.9,
     reviewCount: 128,
@@ -57,6 +61,10 @@ const listings = {
     id: 2,
     title: "Mountain View Cabin",
     location: "Drakensberg, South Africa",
+    coordinates: {
+      lat: -29.2333,
+      lng: 29.4500
+    },
     price: 1800,
     rating: 4.7,
     reviewCount: 95,

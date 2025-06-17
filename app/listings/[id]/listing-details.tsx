@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { MapPin, Star, Users, Bed, Bath, Wifi, Car, Coffee, Utensils, Tv, Wind, ChevronLeft, ChevronRight } from 'lucide-react'
+import { PropertyMap } from '@/components/PropertyMap'
 
 interface Review {
   user: string
@@ -21,6 +22,10 @@ interface Listing {
   id: number
   title: string
   location: string
+  coordinates: {
+    lat: number
+    lng: number
+  }
   price: number
   rating: number
   reviewCount: number
@@ -202,6 +207,9 @@ export function ListingDetails({ listing }: { listing: Listing }) {
               ))}
             </div>
           </div>
+
+          {/* Map */}
+          <PropertyMap coordinates={listing.coordinates} title={listing.title} />
         </div>
 
         {/* Booking Card */}
