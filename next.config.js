@@ -10,6 +10,7 @@ const nextConfig = {
       "images.pixabay.com",
       "res.cloudinary.com",
       "lh3.googleusercontent.com", // For Google profile images
+      "accommodation.south-africa.net", // Our domain
     ],
   },
 };

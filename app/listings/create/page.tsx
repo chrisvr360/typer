@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
 import { PROVINCES, Province } from '@/lib/constants';
+import Image from 'next/image';
+import { X } from 'lucide-react';
 
 interface FormData {
   title: string;
@@ -25,17 +27,15 @@ export default function CreateListingPage() {
   const router = useRouter();
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<FormData>({
     title: '',
     tagline: '',
     description: '',
     location: '',
     price: 0,
-    images: [
-      'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&auto=format&fit=crop&q=60',
-    ],
+    images: [],
     province: '' as Province,
     amenities: '',
     guests: 0,
@@ -43,6 +43,73 @@ export default function CreateListingPage() {
     beds: 0,
     baths: 0
   });
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    // Validate number of images (max 10)
+    if (formData.images.length + files.length > 10) {
+      toast.error('Maximum 10 images allowed');
+      return;
+    }
+
+    setUploadingImages(true);
+    try {
+      const newImages: string[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+          toast.error('Please upload only image files');
+          continue;
+        }
+
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          toast.error('Image size should be less than 5MB');
+          continue;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('type', 'property');
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload image');
+        }
+
+        const data = await response.json();
+        newImages.push(data.imageUrl);
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, ...newImages]
+      }));
+
+      toast.success('Images uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading images:', error);
+      toast.error('Failed to upload images');
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,6 +163,49 @@ export default function CreateListingPage() {
           </h1>
 
           <form onSubmit={handleSubmit} className="space-y-8">
+            {/* Image Upload Section */}
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-white">Images</h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {formData.images.map((image, index) => (
+                  <div key={index} className="relative aspect-square rounded-lg overflow-hidden group">
+                    <Image
+                      src={image}
+                      alt={`Property image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute top-2 right-2 p-1 bg-black/50 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ))}
+                {formData.images.length < 10 && (
+                  <div
+                    className="aspect-square rounded-lg border-2 border-dashed border-gray-400 flex items-center justify-center cursor-pointer hover:border-teal-500 transition-colors"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <span className="text-gray-400">Add Image</span>
+                  </div>
+                )}
+              </div>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                accept="image/*"
+                multiple
+                className="hidden"
+              />
+              <p className="text-sm text-gray-400">
+                Upload up to 10 images. Each image should be less than 5MB.
+              </p>
+            </div>
+
             {/* General Info Section */}
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-white">General Info</h2>

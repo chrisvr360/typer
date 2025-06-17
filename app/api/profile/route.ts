@@ -6,11 +6,11 @@ import User from '@/models/User';
 export async function PUT(req: Request) {
   const session = await getServerSession();
 
-  if (!session || !session.user || !session.user.email) {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { firstName, lastName, bio, phoneNumber } = await req.json();
+  const { firstName, lastName, bio, phoneNumber, image } = await req.json();
 
   try {
     await connectDB();
@@ -22,7 +22,7 @@ export async function PUT(req: Request) {
 
     const updatedUser = await User.findByIdAndUpdate(
       user._id,
-      { firstName, lastName, bio, phoneNumber },
+      { firstName, lastName, bio, phoneNumber, image },
       { new: true, runValidators: true }
     );
 
@@ -30,28 +30,46 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: 'Failed to update user profile' }, { status: 500 });
     }
 
-    return NextResponse.json({ message: 'Profile updated successfully' }, { status: 200 });
+    return NextResponse.json({
+      message: 'Profile updated successfully',
+      user: {
+        firstName: updatedUser.firstName,
+        lastName: updatedUser.lastName,
+        username: updatedUser.username,
+        bio: updatedUser.bio,
+        phoneNumber: updatedUser.phoneNumber,
+        image: updatedUser.image || session.user.image,
+      }
+    });
   } catch (error) {
     console.error('Error updating profile:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   const session = await getServerSession();
 
-  if (!session || !session.user || !session.user.email) {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
     await connectDB();
     const user = await User.findOne({ email: session.user.email });
+    
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    return NextResponse.json(user, { status: 200 });
+    return NextResponse.json({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      username: user.username,
+      bio: user.bio,
+      phoneNumber: user.phoneNumber,
+      image: user.image || session.user.image, // Return user's uploaded image or fallback to Google image
+    });
   } catch (error) {
     console.error('Error fetching profile:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
